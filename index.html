@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14342b"><title>Buku Kas Driver</title>
+<style>
+:root{--paper:#f6f1e6;--card:#fffdf7;--ink:#17261f;--mut:#6b7a70;--line:#e2dac8;--g:#14342b;--o:#e8531f;--ok:#1c8a5a;--bad:#c23a2b;--r:14px}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:84px}
+h1,h2,h3,.big{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.01em}
+.n,input,.big{font-variant-numeric:tabular-nums}
+header{background:var(--g);color:#f6f1e6;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:19px}header small{opacity:.7;display:block;font:11px system-ui;letter-spacing:.12em;text-transform:uppercase}
+main{max-width:880px;margin:0 auto;padding:16px}
+section{display:none}section.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.card h2{margin:0 0 10px;font-size:18px}.mut{color:var(--mut);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.k{border:1px dashed var(--line);border-radius:12px;padding:12px}.k .l{font-size:12px;color:var(--mut)}.big{font-size:22px;font-weight:700}
+.pos{color:var(--ok)}.neg{color:var(--bad)}
+label{display:block;font-size:12px;color:var(--mut);margin:0 0 3px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;color:var(--ink)}
+.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+button{font:inherit;border:0;border-radius:10px;padding:10px 14px;cursor:pointer;background:var(--g);color:#fff;font-weight:600}
+button.o{background:var(--o)}button.s{background:#ece5d3;color:var(--ink)}button.x{background:none;color:var(--bad);padding:4px 8px}
+.bar{height:10px;background:#ece5d3;border-radius:9px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:var(--o);border-radius:9px;transition:width .4s}
+.bar.g i{background:var(--ok)}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--g);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:6}
+nav button{flex:1;background:none;color:#cfd9d3;font-size:11px;padding:8px 2px;border-radius:8px}nav button.on{background:#ffffff1f;color:#fff}
+nav b{display:block;font-size:17px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap}th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}
+.chk{display:flex;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line)}.chk input{width:20px;height:20px;flex:none}.chk label{margin:0;font-size:15px;color:var(--ink)}
+details{border-bottom:1px solid var(--line);padding:10px 0}summary{cursor:pointer;font-weight:600}details p{margin:8px 0 0;color:#33463c}
+.banner{background:#fff1e8;border:1px solid #f3c9b3;border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:14px}
+.stamp{display:inline-block;border:2px solid var(--o);color:var(--o);padding:1px 8px;border-radius:6px;font:700 11px system-ui;letter-spacing:.1em;transform:rotate(-3deg)}
+.hid{display:none!important}
+
+input,select,textarea{font-size:16px}
+header .em{font-size:11px;opacity:.75;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px;vertical-align:middle;display:inline-block}
+#auth{display:flex;align-items:center}
+.ov{position:fixed;inset:0;background:#0009;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px}
+.ov .card{width:100%;max-width:380px;margin:0}.ov input{margin-bottom:10px}
+@media(max-width:560px){main{padding:12px}.card{padding:14px;border-radius:12px}.grid{grid-template-columns:1fr 1fr}.f{grid-template-columns:1fr}.big{font-size:19px}header{padding:12px}header h1{font-size:17px}th,td{padding:7px 4px;font-size:12px}nav button{font-size:10px}.card h2{font-size:17px}}
+</style></head><body>
+<header><div><small>Shopeefood · Pekanbaru</small><h1>Buku Kas Driver</h1></div><div id="auth"></div></header>
+<main>
+<div class="banner" id="ban"></div>
+
+<section id="t-home" class="on">
+ <div class="card"><h2>Hari ini</h2><div class="grid">
+  <div class="k"><div class="l">Bersih hari ini</div><div class="big" id="hNet">-</div></div>
+  <div class="k"><div class="l">Target kotor/hari</div><div class="big" id="hTarget">-</div></div>
+  <div class="k"><div class="l">Sisa order (≈)</div><div class="big" id="hOrd">-</div></div></div>
+  <div class="bar"><i id="hBar" style="width:0"></i></div><div class="mut" id="hMsg"></div></div>
+ <div class="card"><h2>Posisi uang <span class="stamp">ESTIMASI</span></h2><div class="grid">
+  <div class="k"><div class="l">Cash di tangan</div><div class="big" id="pCash">-</div></div>
+  <div class="k"><div class="l">Saldo Shopee</div><div class="big" id="pWal">-</div></div>
+  <div class="k"><div class="l">Tagihan Shopee belum dibayar</div><div class="big" id="pDebt">-</div></div></div>
+  <p class="mut">Cocokkan dengan saldo asli. Kalau beda, catat selisihnya di kolom catatan lalu isi saldo awal berikutnya sesuai kenyataan.</p></div>
+ <div class="card"><h2>Pencapaian</h2>
+  <div class="l mut">Balik modal awal</div><div class="bar g"><i id="bModal"></i></div><div class="mut" id="tModal"></div>
+  <div class="l mut" style="margin-top:10px">Bersih 14 hari terakhir</div><div id="chart"></div>
+  <div class="grid" style="margin-top:10px"><div class="k"><div class="l">Rata-rata bersih/hari aktif</div><div class="big" id="avgNet">-</div></div>
+  <div class="k"><div class="l">Upah rata-rata/order</div><div class="big" id="avgFee">-</div></div>
+  <div class="k"><div class="l">Total selisih COD (nombok)</div><div class="big" id="codLoss">-</div></div></div></div>
+</section>
+
+<section id="t-log"><div class="card"><h2 id="fTitle">Catat hari ini</h2>
+ <div class="f">
+  <div><label>Tanggal</label><input type="date" id="f_date"></div>
+  <div><label>Jumlah order</label><input type="number" inputmode="numeric" id="f_orders"></div>
+  <div><label>Upah antar (Rp)</label><input type="number" inputmode="numeric" id="f_fee"></div>
+  <div><label>Tip / bonus (Rp)</label><input type="number" inputmode="numeric" id="f_tip"></div>
+  <div><label>Nilai COD semua order (Rp)</label><input type="number" inputmode="numeric" id="f_codDue"></div>
+  <div><label>Uang tunai diterima dari customer (Rp)</label><input type="number" inputmode="numeric" id="f_codRec"></div>
+  <div><label>Kembalian yang kamu keluarkan (Rp)</label><input type="number" inputmode="numeric" id="f_change"></div>
+  <div><label>Bayar tagihan Shopee (Rp)</label><input type="number" inputmode="numeric" id="f_bill"></div>
+  <div><label>Tagihan dibayar dari</label><select id="f_billFrom"><option value="cash">Cash</option><option value="wallet">Saldo Shopee</option></select></div>
+  <div><label>Bensin (Rp)</label><input type="number" inputmode="numeric" id="f_fuel"></div>
+  <div><label>Biaya lain: parkir, angin, dll (Rp)</label><input type="number" inputmode="numeric" id="f_other"></div>
+  <div><label>Cash awal hari ini (Rp)</label><input type="number" inputmode="numeric" id="f_cash0"></div>
+  <div><label>Saldo Shopee awal (Rp)</label><input type="number" inputmode="numeric" id="f_wal0"></div>
+ </div>
+ <div style="margin-top:10px"><label>Catatan</label><input id="f_notes" placeholder="mis. narik pagi + sore, hujan, order jauh"></div>
+ <div class="card" style="margin:14px 0 0;background:#f6f1e6"><div class="grid" id="prev"></div></div>
+ <div style="display:flex;gap:8px;margin-top:12px"><button class="o" id="save">Simpan</button><button class="s" id="reset">Kosongkan</button></div>
+ <p class="mut">Selisih COD = (tunai diterima − kembalian) − nilai COD. Contoh 31 Okt: 28.000 − 28.500 = −500 (kamu nombok). Itu dihitung sebagai kerugian, jadi bersih harian jadi jujur.</p></div></section>
+
+<section id="t-plan"><div class="card"><h2>Kalkulator target harian</h2><p class="mut">Semua angka bisa diubah dan tersimpan (sinkron ke semua perangkat kalau sudah login). Default hanyalah perkiraan, ganti dengan angka nyatamu.</p>
+ <div class="f" id="planF"></div></div>
+ <div class="card"><h2>Hasil</h2><div id="planR"></div></div></section>
+
+<section id="t-prep"><div class="card"><h2>Persiapan</h2><div class="bar g"><i id="pBar"></i></div><div class="mut" id="pCnt"></div><div id="chkL"></div></div></section>
+
+<section id="t-hist"><div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><h2>Riwayat</h2><button class="s" id="csv">Ekspor CSV</button></div>
+ <div class="tw"><table><thead><tr><th>Tgl</th><th>Order</th><th>Upah</th><th>COD ±</th><th>Biaya</th><th>Bersih</th><th></th></tr></thead><tbody id="rows"></tbody></table></div></div></section>
+
+<section id="t-guide"><div class="card"><h2>Jawaban untuk pertanyaanmu</h2>
+<p class="mut">Aturan ShopeeFood/SPX bisa berubah dan berbeda per kota. Bagian bertanda ⚠ saya tidak bisa pastikan; cek langsung di aplikasi driver atau tanya pusat bantuan/pengelola mitra.</p>
+<details open><summary>Kuliah + ngajar + narik, rugi tidak?</summary><p>Tidak otomatis rugi. Biaya tetap kecil (bensin Vario 150 irit, kira-kira Rp8–12 ribu/hari kalau jarak dekat). Yang bikin rugi: order jauh dengan upah kecil, muter tanpa order, dan nombok COD. Narik pagi, sore menuju tempat ngajar, dan malam sepulang ngajar itu strategi bagus karena searah rute dan jam ramai. Modal jaket Rp130 ribu + holder Rp15 ribu bisa balik dalam sekitar 1–2 minggu. Target harianmu dihitung di tab <b>Rencana</b>.</p></details>
+<details><summary>Perlu saldo Shopee?</summary><p>⚠ Untuk order COD, Shopee menalangi dulu lalu menjadi tagihan ke kamu, jadi saldo/limit yang cukup membantu menerima order COD. Isi secukupnya, jangan besar-besar: cukup untuk 1–2 order COD sekaligus. Pantau di kartu "Tagihan Shopee belum dibayar".</p></details>
+<details><summary>Barang yang disiapkan</summary><p>Lihat tab <b>Siap</b>. Intinya: uang pecahan Rp2 ribu, 5 ribu, 10 ribu, 20 ribu (sekitar Rp100–150 ribu) supaya tidak ada lagi "gak ada kembalian", dompet khusus COD, holder HP kokoh, power bank, jas hujan, tali/bungee, kantong plastik.</p></details>
+<details><summary>Di Pekanbaru tanpa hub, ambil SPX juga?</summary><p>⚠ Saya tidak bisa memastikan layanan SPX di kotamu; cek di aplikasi apakah ada pendaftarannya. Kalau ada, SPX bisa mengisi waktu sepi makanan (pagi dan sore), tapi bandingkan upah per order dan jarak dulu. Catat tiap hari di sini lalu lihat sumber mana yang lebih menguntungkan.</p></details>
+<details><summary>Jam main, ngetem atau keliling?</summary><p>Jam ramai makanan umumnya sekitar 10.30–13.00 dan 17.00–20.30. Ngetem di titik dekat banyak resto/kampus lebih hemat bensin daripada keliling. Keliling hanya kalau sudah lebih dari 15–20 menit sepi. Pakai catatan harianmu untuk membuktikan titik dan jam terbaik.</p></details>
+<details><summary>On-bid dimatikan tiap 2 jam, dikira pilih-pilih?</summary><p>⚠ Saya tidak menemukan aturan pasti. Umumnya yang dinilai adalah menolak/membatalkan order yang sudah masuk, bukan mematikan status saat sedang tidak ingin menerima order. Yang aman: matikan sebelum ada order, jangan tolak atau cancel setelah order terkirim ke kamu.</p></details>
+<details><summary>Pindah ke Medan: akun terpakai? Kalau 1 bulan tidak on-bid dikeluarkan?</summary><p>⚠ Akun driver biasanya terkait area/kota pendaftaran, jadi pindah kota kemungkinan perlu ganti area lewat support. Soal batas nonaktif 1 bulan, saya tidak bisa memastikan. Tanyakan ke support sebelum pindah dan simpan bukti jawabannya.</p></details>
+<details><summary>Soal hitunganmu (31 Okt – 2 Nov)</summary><p>Upah: 6.400 + 28.800 + 17.600 = Rp52.800. COD 31 Okt: tunai 28.000 untuk 28.500 → −500. 1 Nov: 27.000 − kembalian 2.000 = 25.000 → pas. 2 Nov: kembalian Rp11 ribu keluar dari kantong sendiri. Tagihan Rp60.150 tidak otomatis cocok dengan angka COD yang kamu sebut, karena bisa ada diskon atau potongan. Cek rincian di aplikasi, lalu isi "Nilai COD" per hari sesuai aplikasi.</p></details>
+<details><summary>Cara akses dari mana saja</summary><p>Ikuti README.md: Supabase untuk data, GitHub Pages untuk alamat web. Buka alamatnya di HP, login, lalu "Tambahkan ke layar utama".</p></details></div></section>
+</main>
+<div class="ov hid" id="dlg"><div class="card"><h2>Masuk / Daftar</h2>
+<label>Email</label><input id="lg_e" type="email" autocomplete="email" placeholder="email@contoh.com">
+<label>Password (min. 6 karakter)</label><input id="lg_p" type="password" autocomplete="current-password">
+<div class="mut" id="lg_m" style="margin-bottom:10px"></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="o" id="lg_in">Masuk</button><button id="lg_up">Daftar baru</button><button class="s" id="lg_x">Batal</button></div></div></div>
+<nav id="nav"></nav>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL="YOUR_SUPABASE_URL",SUPABASE_ANON_KEY="YOUR_SUPABASE_ANON_KEY"; // anon key saja, jangan service_role
+const $=id=>document.getElementById(id),N=x=>Number(x)||0,R=x=>(x<0?"-":"")+"Rp"+Math.round(Math.abs(N(x))).toLocaleString("id-ID");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const today=()=>new Date().toLocaleDateString("en-CA");
+const ST={fuelFill:30000,fuelDays:3,data:75000,air:2000,airN:4,svc:150000,svcM:2,days:26,startup:145000,pay:30,save:300000,wish:0,wishD:60};
+const LBL={fuelFill:"Bensin sekali isi (Rp)",fuelDays:"Cukup berapa hari?",data:"Paket data/bulan (Rp)",air:"Isi angin per kali (Rp)",airN:"Isi angin per bulan (kali)",svc:"Biaya servis/oli (Rp)",svcM:"Servis tiap berapa bulan?",days:"Hari narik per bulan",startup:"Modal awal: jaket, holder, dll (Rp)",pay:"Balik modal dalam (hari narik)",save:"Nabung per bulan (Rp)",wish:"Barang keinginan (Rp)",wishD:"Ingin dibeli dalam (hari narik)"};
+const CHK={"Perlengkapan diri":["Jaket driver","Helm + sarung tangan","Jas hujan","Masker"],"Motor (Vario 150)":["Tekanan angin cukup","Bensin cukup","Oli & rem dicek","Holder HP kokoh","Tali / bungee"],"Uang & COD":["Pecahan Rp2rb, 5rb, 10rb, 20rb (±100–150rb)","Dompet khusus COD","Saldo Shopee cukup","Paket data aktif"],"Lain-lain":["Power bank + kabel","Kantong plastik / tas box","Lap kecil","Botol minum"]};
+let sb=null,user=null,logs=[],cfg={plan:{...ST},chk:{}},editId=null;
+const cfgOK=!SUPABASE_URL.startsWith("YOUR_");
+// ---------- storage
+const LS=(k,v)=>{try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||"null");localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}};
+async function load(){
+ if(user){let a=await sb.from("logs").select("*").order("log_date",{ascending:false}),b=await sb.from("settings").select("data").maybeSingle();
+  if(a.error)alert("Gagal baca data: "+a.error.message);logs=a.data||[];if(b.data)cfg={plan:{...ST,...(b.data.data.plan||{})},chk:b.data.data.chk||{}}}
+ else{logs=LS("dl_logs")||[];let c=LS("dl_cfg");if(c)cfg={plan:{...ST,...c.plan},chk:c.chk||{}}}
+ render()}
+async function saveCfg(){LS("dl_cfg",cfg);if(user)await sb.from("settings").upsert({user_id:user.id,data:cfg,updated_at:new Date().toISOString()})}
+// ---------- math
+function calc(r){let cod=N(r.cod_received)-N(r.change_out)-N(r.cod_due),bc=r.bill_from==="cash"?N(r.bill_paid):0,bw=r.bill_from==="wallet"?N(r.bill_paid):0,inc=N(r.fee)+N(r.tip),exp=N(r.fuel)+N(r.other_exp);
+ return{cod,inc,exp,net:inc+cod-exp,cash:N(r.cash_start)+N(r.cod_received)-N(r.change_out)-bc-exp,wal:N(r.wallet_start)+inc-bw}}
+function plan(){let p=cfg.plan,d=Math.max(1,N(p.days)),fuel=N(p.fuelFill)/Math.max(1,N(p.fuelDays)),dat=N(p.data)/d,air=N(p.air)*N(p.airN)/d,svc=N(p.svc)/(Math.max(1,N(p.svcM))*d),ops=fuel+dat+air+svc,mod=N(p.startup)/Math.max(1,N(p.pay)),sav=N(p.save)/d,wish=N(p.wish)/Math.max(1,N(p.wishD));
+ return{fuel,dat,air,svc,ops,mod,sav,wish,total:ops+mod+sav+wish,bep:ops}}
+const sorted=()=>logs.slice().sort((a,b)=>a.log_date<b.log_date?-1:1);
+// ---------- render
+function render(){let P=plan(),L=sorted(),t=today(),tl=L.filter(r=>r.log_date===t),tn=tl.reduce((s,r)=>s+calc(r).net,0),to=tl.reduce((s,r)=>s+N(r.orders),0);
+ let all=L.map(calc),net=all.reduce((s,c)=>s+c.net,0),fee=L.reduce((s,r)=>s+N(r.fee),0),ord=L.reduce((s,r)=>s+N(r.orders),0),af=ord?fee/ord:6000,codL=all.reduce((s,c)=>s+Math.min(0,c.cod),0);
+ let tg=Math.round(P.total),need=Math.max(0,tg-tn);
+ $("hNet").textContent=R(tn);$("hNet").className="big n "+(tn>=0?"pos":"neg");$("hTarget").textContent=R(tg);$("hOrd").textContent=need?Math.ceil(need/af)+" order":"✓";
+ $("hBar").style.width=Math.min(100,Math.max(0,tg?tn/tg*100:0))+"%";
+ $("hMsg").textContent=tn>=tg?"Target hari ini tercapai.":`Impas operasional ≈ ${R(P.bep)}/hari. Tutup hari ini kalau bersih ≥ itu.`;
+ let last=L[L.length-1],lc=last?calc(last):null,debt=L.reduce((s,r)=>s+N(r.cod_due)-N(r.bill_paid),0);
+ $("pCash").textContent=lc?R(lc.cash):"-";$("pWal").textContent=lc?R(lc.wal):"-";$("pDebt").textContent=R(Math.max(0,debt));
+ let m=N(cfg.plan.startup),pr=Math.max(0,net);$("bModal").style.width=Math.min(100,m?pr/m*100:0)+"%";$("tModal").textContent=`Bersih terkumpul ${R(net)} dari modal ${R(m)}`+(net>=m?" · sudah balik modal 🎉":"");
+ let act=new Set(L.map(r=>r.log_date)).size;$("avgNet").textContent=act?R(net/act):"-";$("avgFee").textContent=ord?R(af):"-";$("codLoss").textContent=R(codL);
+ let days=[...Array(14)].map((_,i)=>{let d=new Date();d.setDate(d.getDate()-13+i);return d.toLocaleDateString("en-CA")}),v=days.map(d=>L.filter(r=>r.log_date===d).reduce((s,r)=>s+calc(r).net,0)),mx=Math.max(tg,...v.map(Math.abs),1);
+ $("chart").innerHTML=`<svg viewBox="0 0 280 70" width="100%"><line x1="0" x2="280" y1="${60-tg/mx*55}" y2="${60-tg/mx*55}" stroke="#e8531f" stroke-dasharray="3 3"/>`+v.map((x,i)=>`<rect x="${i*20+3}" y="${x>=0?60-x/mx*55:60}" width="14" height="${Math.max(1,Math.abs(x)/mx*55)}" rx="3" fill="${x>=0?"#1c8a5a":"#c23a2b"}"/>`).join("")+`</svg><div class="mut">Garis oranye = target/hari</div>`;
+ const ae=document.activeElement;
+ if(!(ae&&ae.dataset&&ae.dataset.p!==undefined)){
+ $("planF").innerHTML=Object.keys(ST).map(k=>`<div><label>${LBL[k]}</label><input type="number" inputmode="numeric" data-p="${k}" value="${cfg.plan[k]}"></div>`).join("");
+ document.querySelectorAll("[data-p]").forEach(e=>e.oninput=()=>{cfg.plan[e.dataset.p]=N(e.value);saveCfg();render()})}
+ planOut();
+ $("chkL").innerHTML=Object.entries(CHK).map(([g,a])=>`<h3 style="margin:14px 0 2px;font-size:15px">${g}</h3>`+a.map(x=>`<div class="chk"><input type="checkbox" id="c_${esc(x)}" ${cfg.chk[x]?"checked":""} data-c="${esc(x)}"><label for="c_${esc(x)}">${esc(x)}</label></div>`).join("")).join("");
+ document.querySelectorAll("[data-c]").forEach(e=>e.onchange=()=>{cfg.chk[e.dataset.c]=e.checked;saveCfg();chkCnt()});chkCnt();
+ $("rows").innerHTML=L.slice().reverse().map(r=>{let c=calc(r);return`<tr><td>${r.log_date.slice(5)}</td><td>${r.orders}</td><td>${R(r.fee)}</td><td class="${c.cod<0?"neg":""}">${R(c.cod)}</td><td>${R(c.exp)}</td><td class="${c.net<0?"neg":"pos"}"><b>${R(c.net)}</b></td><td><button class="s" data-e="${r.id}">Ubah</button><button class="x" data-d="${r.id}">✕</button></td></tr>`}).join("")||'<tr><td colspan="7" class="mut">Belum ada catatan.</td></tr>';
+ document.querySelectorAll("[data-e]").forEach(b=>b.onclick=()=>edit(b.dataset.e));document.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>del(b.dataset.d))}
+function renderHome(){render()}
+function planOut(){let P=plan(),f=x=>R(x);$("planR").innerHTML=`<table><tbody>
+<tr><td>Bensin/hari</td><td>${f(P.fuel)}</td></tr><tr><td>Paket data/hari</td><td>${f(P.dat)}</td></tr><tr><td>Angin/hari</td><td>${f(P.air)}</td></tr><tr><td>Cadangan servis/hari</td><td>${f(P.svc)}</td></tr>
+<tr><td><b>Impas operasional</b></td><td><b>${f(P.ops)}</b></td></tr><tr><td>Cicil balik modal/hari</td><td>${f(P.mod)}</td></tr><tr><td>Nabung/hari</td><td>${f(P.sav)}</td></tr><tr><td>Keinginan/hari</td><td>${f(P.wish)}</td></tr></tbody></table>
+<div class="k" style="margin-top:10px"><div class="l">TARGET UPAH KOTOR PER HARI</div><div class="big">${f(P.total)}</div></div>
+<p class="mut">Dengan upah rata-rata ±Rp6.000/order, itu sekitar ${Math.ceil(P.total/6000)} order/hari. Isi dari data nyata nanti akan menyesuaikan di Beranda. Bensin tergantung harga BBM dan jarak, ubah sesuai kebiasaanmu.</p>`}
+function chkCnt(){let a=Object.values(CHK).flat(),n=a.filter(x=>cfg.chk[x]).length;$("pBar").style.width=n/a.length*100+"%";$("pCnt").textContent=n+" dari "+a.length+" siap"}
+// ---------- form
+const FK={orders:"orders",fee:"fee",tip:"tip",codDue:"cod_due",codRec:"cod_received",change:"change_out",bill:"bill_paid",fuel:"fuel",other:"other_exp",cash0:"cash_start",wal0:"wallet_start"};
+function row(){let r={log_date:$("f_date").value,bill_from:$("f_billFrom").value,notes:$("f_notes").value};for(let k in FK)r[FK[k]]=N($("f_"+k).value);return r}
+function prev(){let r=row(),c=calc(r);$("prev").innerHTML=[["Pendapatan",c.inc],["Selisih COD",c.cod],["Biaya",c.exp],["Bersih",c.net],["Cash akhir (est.)",c.cash],["Saldo Shopee (est.)",c.wal]].map(([l,v])=>`<div><div class="l mut">${l}</div><b class="n ${v<0?"neg":""}">${R(v)}</b></div>`).join("")}
+function reset(){editId=null;$("fTitle").textContent="Catat hari ini";for(let k in FK)$("f_"+k).value="";$("f_notes").value="";$("f_date").value=today();$("f_billFrom").value="cash";
+ let L=sorted(),l=L[L.length-1];if(l){let c=calc(l);$("f_cash0").value=Math.round(c.cash);$("f_wal0").value=Math.round(c.wal)}prev()}
+function edit(id){let r=logs.find(x=>String(x.id)===String(id));if(!r)return;editId=r.id;$("fTitle").textContent="Ubah catatan";$("f_date").value=r.log_date;$("f_billFrom").value=r.bill_from;$("f_notes").value=r.notes||"";for(let k in FK)$("f_"+k).value=r[FK[k]];prev();go("log")}
+async function del(id){if(!confirm("Hapus catatan ini?"))return;if(user){let{error}=await sb.from("logs").delete().eq("id",id);if(error)return alert(error.message)}else{logs=logs.filter(x=>String(x.id)!==String(id));LS("dl_logs",logs)}load()}
+$("save").onclick=async()=>{let r=row();if(!r.log_date)return alert("Pilih tanggal");
+ if(user){let q=editId?sb.from("logs").update(r).eq("id",editId):sb.from("logs").insert(r),{error}=await q;if(error)return alert(error.message)}
+ else{if(editId)logs=logs.map(x=>x.id===editId?{...x,...r}:x);else logs.push({...r,id:Date.now()});LS("dl_logs",logs)}
+ await load();reset();go("home")};
+$("reset").onclick=reset;document.querySelectorAll("#t-log input,#t-log select").forEach(e=>e.oninput=prev);
+$("csv").onclick=()=>{if(!logs.length)return;let k=Object.keys(logs[0]).filter(x=>x!=="user_id");let s=k.join(",")+"\n"+sorted().map(r=>k.map(x=>'"'+String(r[x]??"").replace(/"/g,'""')+'"').join(",")).join("\n");let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([s],{type:"text/csv"}));a.download="buku-kas-driver.csv";a.click()};
+// ---------- nav & auth
+const TABS=[["home","🏠","Beranda"],["log","✍️","Catat"],["plan","🎯","Rencana"],["prep","🎒","Siap"],["hist","📒","Riwayat"],["guide","💡","Panduan"]];
+$("nav").innerHTML=TABS.map(t=>`<button data-t="${t[0]}"><b>${t[1]}</b>${t[2]}</button>`).join("");
+function go(t){document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id==="t-"+t));document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));scrollTo(0,0)}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>go(b.dataset.t));
+function authUI(){$("ban").classList.toggle("hid",!!user);
+ $("auth").innerHTML=user?`<span class="em">${esc(user.email)}</span><button class="s" id="out">Keluar</button>`:`<button class="o" id="in">Masuk</button>`;
+ $("ban").innerHTML=!cfgOK?"⚠ URL & kunci Supabase di <b>index.html</b> belum diisi, jadi login belum bisa. Sementara ini mode tamu (data hanya di perangkat ini).":!sb?"⚠ Supabase gagal dimuat (cek internet). Mode tamu aktif.":"Mode tamu: data hanya di perangkat ini. Tekan <b>Masuk</b> agar tersimpan di cloud.";
+ if($("in"))$("in").onclick=()=>{if(!cfgOK||!sb)return alert("Login belum bisa: isi dulu Project URL & kunci Supabase di index.html (lihat README tahap 3).");$("lg_m").textContent="";$("dlg").classList.remove("hid")};
+ if($("out"))$("out").onclick=()=>sb.auth.signOut()}
+async function doAuth(up){let e=$("lg_e").value.trim(),p=$("lg_p").value;if(!e||p.length<6){$("lg_m").textContent="Isi email dan password minimal 6 karakter.";return}
+ $("lg_m").textContent="Memproses...";let r=up?await sb.auth.signUp({email:e,password:p}):await sb.auth.signInWithPassword({email:e,password:p});
+ if(r.error){$("lg_m").textContent=r.error.message+(up?"":" (belum punya akun? tekan Daftar baru)");return}
+ if(up&&!r.data.session){$("lg_m").textContent="Cek email untuk konfirmasi, lalu tekan Masuk.";return}
+ $("dlg").classList.add("hid");$("lg_p").value=""}
+$("lg_in").onclick=()=>doAuth(false);$("lg_up").onclick=()=>doAuth(true);$("lg_x").onclick=()=>$("dlg").classList.add("hid");
+(async()=>{try{if(cfgOK&&window.supabase){sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let{data}=await sb.auth.getSession();user=data.session?.user||null;
+  sb.auth.onAuthStateChange((_,s)=>{let u=s?.user||null;if((u?.id)!==(user?.id)){user=u;authUI();load().then(reset)}})}}catch(e){console.error(e);sb=null}
+ authUI();await load();reset();go("home")})();
+</script></body></html>
